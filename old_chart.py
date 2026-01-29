@@ -35,7 +35,7 @@ def generate_chart(coin):
         "font.size": 11
     })
     
-    fig, ax = plt.subplots(figsize=(10, 8))
+    fig, ax = plt.subplots(figsize=(8, 3))
     
     # price line
     ax.plot(df["ts"], df["price"], color=line_color, linewidth=2)
@@ -83,5 +83,5 @@ def generate_chart(coin):
     ax.set_ylabel("")
     
     plt.tight_layout()
-    plt.savefig(f"img/{coin}.png", dpi=500)
+    plt.savefig(f"img/{coin}.png", dpi=300)
     plt.close()
