@@ -31,7 +31,7 @@ async def get_price(url, coin):
             print(f"[debug] data: {data}")
             return data[coin]['usd']
 
-async def send_price_alert(xmr_price, zec_price, xmr_old_price=None, zec_old_price=None, startup=False):
+async def send_price_alert(xmr_price, zec_price, xmr_old_price, zec_old_price, startup=False):
     if startup:
         startup_msg = f"[+] started\n\n[*] XMR price:  ${xmr_price:.2f}\n[*] ZEC price: ${zec_price:.2f}"
         generate_chart("monero")
@@ -92,10 +92,10 @@ async def price_monitor():
             zec_history.append(zec_current_price)
             print(f"[debug] XMR diff: {xmr_current_price - xmr_last_price}\n[debug] ZEC diff: {zec_current_price - zec_last_price}\n\n")
             if abs(xmr_current_price - xmr_last_price) >= THRESHOLD:
-                await send_price_alert(xmr_current_price, zec_current_price)
+                await send_price_alert(xmr_current_price, zec_current_price, xmr_last_price, zec_last_price)
                 xmr_last_price = xmr_current_price
             if abs(zec_current_price - zec_last_price) >= THRESHOLD:
-                await send_price_alert(xmr_current_price, zec_current_price)
+                await send_price_alert(xmr_current_price, zec_current_price, xmr_last_price, zec_last_price)
                 zec_last_price = zec_current_price
         except Exception as e:
             print("Error:", e)
