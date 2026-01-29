@@ -7,7 +7,7 @@ from io import BytesIO
 from aiogram.types import InputMediaPhoto, FSInputFile
 from dotenv import load_dotenv, dotenv_values
 import os
-from old_chart import generate_chart
+from chart import generate_chart
 
 load_dotenv()
 bot_token = os.getenv("bot_token")
@@ -34,17 +34,19 @@ async def get_price(url, coin):
 async def send_price_alert(xmr_price, zec_price, xmr_old_price, zec_old_price, startup=False):
     if startup:
         startup_msg = f"[+] started\n\n[*] XMR price:  ${xmr_price:.2f}\n[*] ZEC price: ${zec_price:.2f}"
-        generate_chart("monero")
-        generate_chart("zcash")
-        startup_charts = [
-            InputMediaPhoto(
-                media=FSInputFile("img/monero.png"),
-                caption=startup_msg
-            ),
-            InputMediaPhoto(
-                media=FSInputFile("img/zcash.png")
-            )
-        ]
+        generate_chart('dual')
+        await bot.send_photo(chat_id=chat_id, photo=FSInputFile("img/xmr_zec.png"), caption=startup_msg)
+        #generate_chart("monero")
+        #generate_chart("zcash")
+        #startup_charts = [
+        #    InputMediaPhoto(
+        #        media=FSInputFile("img/monero.png"),
+        #        caption=startup_msg
+        #    ),
+        #    InputMediaPhoto(
+        #        media=FSInputFile("img/zcash.png")
+        #    )
+        #]
     else:
         xmr_diff = xmr_price - xmr_old_price
         zec_diff = zec_price - zec_old_price
@@ -61,15 +63,14 @@ async def send_price_alert(xmr_price, zec_price, xmr_old_price, zec_old_price, s
             zec_msg = f"[!] zcash (ZEC) {direction_down} dropped by ${abs(zec_diff):.2f}\n\n[*] current price: ${zec_price:.2f}"
     
         if xmr_msg:
-            generate_chart("monero")
+            generate_chart('single', 'monero')
             await bot.send_photo(chat_id=chat_id, photo=FSInputFile("img/monero.png"), caption=xmr_msg)
         elif zec_msg:
-            generate_chart("zcash")
+            generate_chart('single', 'zcash')
             await bot.send_photo(chat_id=chat_id, photo=FSInputFile("img/zcash.png"), caption=zec_msg)
         else:
             pass
-    #await bot.send_photo(chat_id=chat_id, photo=FSInputFile("monero.png"), caption=startup_msg)
-    await bot.send_media_group(chat_id=chat_id, media=startup_charts)
+    #await bot.send_photo(chat_id=chat_id, photo=FSInputFile("img/xmr_zec.png"), caption=startup_msg)
     #await send_price_chart()
     #news = await get_xmr_news()
     #if news:
@@ -81,7 +82,7 @@ async def price_monitor():
     zec_last_price = await get_price(zec_url, "zcash")
     zec_history.append(zec_last_price)
 
-    await send_price_alert(xmr_last_price, zec_last_price, startup=True)
+    await send_price_alert(xmr_last_price, zec_last_price, None, None, startup=True)
 
     while True:
         await asyncio.sleep(CHECK_INTERVAL)
@@ -101,8 +102,9 @@ async def price_monitor():
             print("Error:", e)
 
 async def stats_command():
-    generate_chart("img/xmr_zec.png", days=1)
+    generate_chart('dual')
     msg = f"[+] ok\n\n[*] XMR price:  ${xmr_price:.2f}\n[*] ZEC price: ${zec_price:.2f}"
+    await bot.send_photo(chat_id=chat_id, photo=FSInputFile("xmr_zec.png"), caption=msg)
 
 async def main():
     asyncio.create_task(price_monitor())
