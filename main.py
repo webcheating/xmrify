@@ -5,9 +5,9 @@ from aiogram.types import InputFile
 import matplotlib.pyplot as plt
 from io import BytesIO
 from aiogram.types import InputMediaPhoto, FSInputFile
-from chart import generate_chart
 from dotenv import load_dotenv, dotenv_values
 import os
+from old_chart import generate_chart
 
 load_dotenv()
 bot_token = os.getenv("bot_token")

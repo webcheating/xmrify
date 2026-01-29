@@ -23,10 +23,7 @@ def fetch_price(coin_id, days=1, vs_currency="usd"):
     #return df[(df["price"] > 0) & (df["price"] < 1_000_000)]
     return df
 
-def generate_chart(
-    output="img/xmr_zec.png",
-    days=1
-):
+def generate_chart(output="img/xmr_zec.png", days=1):
     xmr = fetch_price("monero", days)
     zec = fetch_price("zcash", days)
 
