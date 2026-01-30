@@ -55,17 +55,21 @@ async def send_price_alert(xmr_price, zec_price, xmr_old_price, zec_old_price, s
         direction_down = "↓"
         if xmr_diff > 0:
             xmr_msg = f"[!] monero (XMR) {direction_up} increased by ${abs(xmr_diff):.2f}\n\n[*] current price: ${xmr_price:.2f}"
-        else:
+        elif xmr_diff < 0:
             xmr_msg = f"[!] monero (XMR) {direction_down} dropped by ${abs(xmr_diff):.2f}\n\n[*] current price: ${xmr_price:.2f}"
+        else:
+            xmr_msg = None
         if zec_diff > 0:
             zec_msg = f"[!] zcash (ZEC) {direction_up} increased by ${abs(zec_diff):.2f}\n\n[*] current price: ${zec_price:.2f}"
-        else:
+        elif zec_diff < 0:
             zec_msg = f"[!] zcash (ZEC) {direction_down} dropped by ${abs(zec_diff):.2f}\n\n[*] current price: ${zec_price:.2f}"
-    
-        if xmr_msg:
+        else:
+            zec_msg = None
+        
+        if xmr_msg != None:
             generate_chart('single', 'monero')
             await bot.send_photo(chat_id=chat_id, photo=FSInputFile("img/monero.png"), caption=xmr_msg)
-        elif zec_msg:
+        elif zec_msg != None:
             generate_chart('single', 'zcash')
             await bot.send_photo(chat_id=chat_id, photo=FSInputFile("img/zcash.png"), caption=zec_msg)
         else:
