@@ -20,6 +20,8 @@ CHECK_INTERVAL = 333
 xmr_history = []
 zec_history = []
 
+#news_url = "https://api.coinmarketcap.com/aggr/v3/news/cdp?mode=top&cryptoId=328&language=en"
+
 #price_url = "https://api.coingecko.com/api/v3/simple/price?ids=monero,zcash&vs_currencies=usd"
 xmr_url = "https://api.coingecko.com/api/v3/simple/price?ids=monero&vs_currencies=usd"
 zec_url = "https://api.coingecko.com/api/v3/simple/price?ids=zcash&vs_currencies=usd"
